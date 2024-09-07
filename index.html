@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Himayetsu</title>
+    <style>
+        /* Reset some default browser styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Trebuchet MS', sans-serif;
+            line-height: 1.6;
+            padding: 0;
+            margin: 0;
+            overflow-x: hidden;
+            /* Prevent horizontal overflow */
+        }
+
+        /* Background image with center position and dynamic scaling */
+        body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('Images/home.jpg');
+    background-size: contain;
+    background-position: 80% center;
+    /* Position between center (50%) and center-right */
+    background-repeat: no-repeat;
+    z-index: -1;
+    opacity: 0;
+    animation: fadeIn 2s forwards;
+}
+
+        /* Fade-in animation for background */
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        header {
+            background-color: #27192b;
+            color: white;
+            padding: 20px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 100%;
+            position: fixed;
+            top: -100px;
+            /* Start above the viewport */
+            left: 0;
+            width: 100%;
+            z-index: 2;
+            animation: slideDown 1s forwards 1s;
+            /* Slide down effect with delay */
+        }
+
+        /* Slide-down animation for header */
+        @keyframes slideDown {
+            to {
+                top: 0;
+            }
+        }
+
+        .header-left {
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            margin-left: 100px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-grow: 1;
+            max-width: 50%;
+            /* Adjust the max width to control the spacing */
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+            margin-right: 20px;
+        }
+
+        header a:hover {
+            text-decoration: underline;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: block;
+            position: absolute;
+            background-color: #f9f9f9;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            padding: 12px 16px;
+            z-index: 1;
+            width: 200px;
+            visibility: hidden;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            margin-left: -40px;
+        }
+
+        .dropdown-content a {
+            color: black;
+            text-decoration: none;
+            display: block;
+            margin: 5px 0;
+            white-space: nowrap;
+            padding: 5px 10px;
+            transition: background-color 0.3s ease, padding 0.3s ease;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #ddd;
+            padding: 12px 20px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .dropdown:hover .dropdown-content {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        footer {
+            background-color: #27192b;
+            color: white;
+            text-align: center;
+            padding: 10px 5%;
+            max-width: 100%;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1;
+            opacity: 0;
+            animation: fadeInFooter 1s forwards 2s;
+            /* Delayed fade-in effect */
+        }
+
+        @keyframes fadeInFooter {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .content {
+            font-family: 'Amiri';
+            padding: 0 5%;
+            max-width: 100%;
+            color: white;
+            /* Ensure text is visible over the background */
+        }
+
+        .content h1 {
+            font-family: 'Trebuchet MS', sans-serif;
+            color: black;
+            font-size: 3em;
+            margin-bottom: 20px;
+            margin-left: 70px;
+            margin-top: 200px;
+            margin-bottom: 50px;
+            opacity: 0;
+            animation: fadeInTitle 1s forwards;
+            animation-delay: 1.5s; /* Delay by 2.5s (2s from button animations + 0.5s) */
+        }
+
+        /* Animation for fading in h1 */
+        @keyframes fadeInTitle {
+            to {
+                opacity: 1;
+            }
+        }
+
+                .content p {
+                    font-size: 1.3em;
+                    margin-bottom: 20px;
+                }
+
+                /* Stacked buttons aligned to left center */
+                /* Capsule-shaped buttons */
+        .content .btn {
+            background-color: #3a0048;
+            color: white;
+            padding: 14px 0px;
+            text-decoration: none;
+            margin-bottom: 40px;
+            margin-left: 100px;
+            display: block;
+            width: 200px;
+            text-align: center;
+            border-radius: 50px; /* This makes the button capsule-shaped */
+            opacity: 0;
+            transform: translateX(-50px);
+            animation: fadeInLeft 1s forwards;
+            /* Fade-in from left */
+        }
+
+        .content .btn:nth-child(2) {
+            animation-delay: 1s;
+        }
+
+        .content .btn:nth-child(3) {
+            animation-delay: 0.5s;
+        }
+
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: calc(100vh - 150px);
+            /* Ensure content is centered vertically */
+            margin-top: -50px;
+            /* Move content up slightly */
+        }
+
+        /* Fade-in from left for buttons */
+        @keyframes fadeInLeft {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Ensure responsiveness */
+        @media (max-width: 600px) {
+
+            header,
+            footer,
+            .content {
+                padding: 10px;
+            }
+
+            .header-right {
+                flex-direction: column;
+                width: auto;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="header-left">
+            <a href="#">Home</a>
+        </div>
+        <div class="header-right">
+            <div class="dropdown">
+                <a href="#">boo</a>
+                <div class="dropdown-content">
+                    <a href="#">Option 1</a>
+                    <a href="#">Option 2</a>
+                    <a href="#">Option 3</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <a href="#">poo</a>
+                <div class="dropdown-content">
+                    <a href="#">Option A</a>
+                    <a href="#">Option B</a>
+                    <a href="#">Option C</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <a href="#">woo</a>
+                <div class="dropdown-content">
+                    <a href="#">Item X</a>
+                    <a href="#">Item Y</a>
+                    <a href="#">Item Z</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="content">
+        <h1>Himayetsu's Website</h1>
+        <a href="#" class="btn">uno</a>
+        <a href="#" class="btn">dos</a>
+        <a href="#" class="btn">tres</a>
+    </div>
+
+    <footer>
+        <p>my greatest failure.</p>
+    </footer>
+
+</body>
+
+</html>
