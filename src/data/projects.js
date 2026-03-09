@@ -67,7 +67,7 @@ export const completedProjects = [
   {
     title: '2048 Neural Network',
     description: '2048 game with a neural network agent. Deep Q-learning with PyTorch (LibTorch), replay buffer, and SDL2 rendering.',
-    tags: ['C++', 'PyTorch', 'SDL2', 'Reinforcement Learning'],
+    tags: ['C++', 'PyTorch', 'SDL2'],
     color: '#8b7355',
     github: 'https://github.com/himayetsu/2048-Neural-Network',
     live: '#',
@@ -76,9 +76,9 @@ export const completedProjects = [
   {
     title: 'ArmorSim 3D',
     description: '3D armor penetration simulation with Lanz-Odermatt and De Marre equations, spalling, and layer-by-layer armor editor.',
-    tags: ['Python', 'PyQt5', 'PyQtGraph', 'Physics'],
+    tags: ['Python', 'PyQt5', 'OpenGL'],
     color: '#8b7355',
-    github: '#',
+    github: 'https://github.com/himayetsu/penetrationsim',
     live: '#',
     categories: ['simulation'],
   },
