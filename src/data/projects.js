@@ -39,12 +39,12 @@ export const completedProjects = [
   },
   {
     title: 'Solar Sim',
-    description: 'N-body solar system simulator with realistic orbital mechanics. Built in C++ with OpenGL, custom camera and sphere rendering.',
-    tags: ['C++', 'OpenGL', 'GLM', 'Physics'],
+    description: 'Real-time gravitational sandbox. Figure-8 three-body orbit, binary stars, sandbox mode. C++ with OpenGL, GLFW, and velocity Verlet integration.',
+    tags: ['C++', 'OpenGL', 'GLFW', 'GLM'],
     color: '#8b7355',
     github: 'https://github.com/himayetsu/SolarSim',
     live: '#',
-    categories: ['simulation'],
+    categories: ['simulation', 'games'],
   },
   {
     title: 'Planetoids',
