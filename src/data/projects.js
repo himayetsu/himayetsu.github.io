@@ -39,7 +39,7 @@ export const completedProjects = [
   },
   {
     title: 'Solar Sim',
-    description: 'Real-time gravitational sandbox. Figure-8 three-body orbit, binary stars, sandbox mode. C++ with OpenGL, GLFW, and velocity Verlet integration.',
+    description: 'Real-time gravitational sandbox. C++ with OpenGL, GLFW, and velocity Verlet integration.',
     tags: ['C++', 'OpenGL', 'GLFW', 'GLM'],
     color: '#8b7355',
     github: 'https://github.com/himayetsu/SolarSim',
