@@ -4,14 +4,17 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "concurrently -k -n main,v3 -c blue,yellow \"vite\" \"npm:dev:v3\"",
+    "dev:v3": "npm --prefix v3 run dev",
+    "build": "vite build && npm run build:v3",
+    "build:v3": "npm --prefix v3 run build",
     "preview": "vite preview"
   },
   "devDependencies": {
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.4",
+    "concurrently": "^10.0.3",
     "typescript": "~5.9.3",
     "vite": "^7.3.1"
   },

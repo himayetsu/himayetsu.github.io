@@ -53,24 +53,30 @@ export default function Navbar() {
         <span className="logo-text">henryli</span>
       </button>
 
-      <div className="nav-links">
-        {navItems.map(item => (
-          <button
-            key={item.id}
-            className={`nav-link ${active === item.id ? 'active' : ''}`}
-            onClick={() => scrollTo(item.id)}
-            data-hover
-          >
-            {item.label}
-            {active === item.id && (
-              <motion.div
-                className="nav-indicator"
-                layoutId="nav-indicator"
-                transition={{ type: 'spring', stiffness: 350, damping: 30 }}
-              />
-            )}
-          </button>
-        ))}
+      <div className="nav-right">
+        <div className="nav-links">
+          {navItems.map(item => (
+            <button
+              key={item.id}
+              className={`nav-link ${active === item.id ? 'active' : ''}`}
+              onClick={() => scrollTo(item.id)}
+              data-hover
+            >
+              {item.label}
+              {active === item.id && (
+                <motion.div
+                  className="nav-indicator"
+                  layoutId="nav-indicator"
+                  transition={{ type: 'spring', stiffness: 350, damping: 30 }}
+                />
+              )}
+            </button>
+          ))}
+        </div>
+
+        <a className="nav-v3" href="/v3/" data-hover>
+          V3 ↗
+        </a>
       </div>
     </motion.nav>
   )

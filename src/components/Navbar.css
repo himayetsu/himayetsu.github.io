@@ -44,9 +44,30 @@
   color: var(--text-primary);
 }
 
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
 .nav-links {
   display: flex;
   gap: 4px;
+}
+
+.nav-v3 {
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.nav-v3:hover {
+  background: var(--accent);
+  color: var(--bg-primary, #f2ebe3);
 }
 
 .nav-link {

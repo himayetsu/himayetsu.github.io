@@ -109,6 +109,16 @@ export const completedProjects = [
     live: '#',
     categories: ['tools'],
   },
+  {
+    title: 'Small Language Model Storyteller',
+    description: 'A small language model that generates short story continuations based on user input. Built from Pytorch, trained on ',
+    descriptionLink: { text: 'dataset', url: 'https://github.com/ganesh-k13/shell/tree/master/test_search/www.glozman.com/TextPages' },
+    tags: ['Machine Learning', 'Language Model', 'Pytorch'],
+    color: '#8b7355',
+    github: '#',
+    live: '#',
+    categories: ['machine learning', 'fullstack'],
+  },
 ]
 
 export const inProgressProjects = [

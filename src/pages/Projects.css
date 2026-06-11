@@ -139,6 +139,11 @@
   z-index: 1;
 }
 
+.card-desc a {
+  color: var(--text-primary);
+  text-decoration: underline;
+}
+
 .card-tags {
   display: flex;
   flex-wrap: wrap;

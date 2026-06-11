@@ -55,7 +55,12 @@ function ProjectCard({ project, displayNumber, index, onViewDetails, showId = tr
         </div>
       )}
       {showId && <h3 className="card-title">{project.title}</h3>}
-      <p className="card-desc">{project.description}</p>
+      <p className="card-desc">
+        {project.description}
+        {project.descriptionLink && (
+          <a href={project.descriptionLink.url} target="_blank" rel="noreferrer">{project.descriptionLink.text}</a>
+        )}
+      </p>
       <div className="card-tags">
         {project.tags.map((tag) => (
           <span key={tag} className="card-tag">{tag}</span>
