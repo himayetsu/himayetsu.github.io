@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useExperience } from '../store/useExperience'
 import { PLANET_BY_ID } from '../config/solarSystem'
 import { about, contact } from '../data/content'
@@ -130,18 +129,6 @@ function EducationPanel({ planet }) {
 }
 
 function ContactPanel() {
-  const [form, setForm] = useState({ name: '', email: '', message: '' })
-  const [sent, setSent] = useState(false)
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    const body = encodeURIComponent(`${form.message}\n\n— ${form.name} (${form.email})`)
-    window.open(`mailto:${contact.email}?subject=Portfolio contact&body=${body}`, '_self')
-    setSent(true)
-    setTimeout(() => setSent(false), 3000)
-    setForm({ name: '', email: '', message: '' })
-  }
-
   return (
     <>
       <h3 className="panel-h3">{contact.heading}</h3>
@@ -157,31 +144,6 @@ function ContactPanel() {
           </a>
         ))}
       </div>
-      <form className="panel-form" onSubmit={handleSubmit}>
-        <input
-          required
-          placeholder="Name"
-          value={form.name}
-          onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-        />
-        <input
-          required
-          type="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-        />
-        <textarea
-          required
-          rows={4}
-          placeholder="Message"
-          value={form.message}
-          onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
-        />
-        <button type="submit" className={`panel-submit ${sent ? 'is-sent' : ''}`}>
-          {sent ? 'Transmission sent' : 'Transmit message'}
-        </button>
-      </form>
     </>
   )
 }

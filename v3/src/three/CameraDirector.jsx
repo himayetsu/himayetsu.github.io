@@ -123,13 +123,14 @@ function computeDesired(state, time, yaw, outPos, outTarget) {
 
       if (def.shot === 'far') {
         // outer planets: hang beyond the orbit and look back sunward — the
-        // planet rim-lit in the foreground, sun and inner system as backdrop
+        // planet rim-lit in the foreground, sun and inner system as backdrop.
+        // The -10° swing brings the sun in from the frame edge toward center.
         _off
           .copy(_dir)
           .multiplyScalar(d * 0.6)
           .addScaledVector(_side, d * 0.42)
           .addScaledVector(UP, d * 0.2)
-          .applyAxisAngle(UP, yaw)
+          .applyAxisAngle(UP, yaw - Math.PI / 12)
         outPos.copy(_p).add(_off)
         // planet anchors the shot; from out here the sun lands in frame behind it
         _fwd.copy(_p).sub(outPos).normalize()
