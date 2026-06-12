@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
-import { useFrame } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber'
 import { Detailed } from '@react-three/drei'
 import { gasGiantShader, atmosphereShader } from './materials/shaders'
 import { attachEclipse } from './materials/eclipse'
@@ -129,21 +129,21 @@ export default function Planet({ def }) {
   useEffect(() => register(def.id, anchorRef.current), [def.id])
   useEffect(() => () => geometries.forEach((g) => g.dispose()), [geometries])
 
-  // texture LOD: bake a 2x resolution set in the background on first focus
-  // (runs during the travel shot) and hot-swap it into the live materials
+  // texture LOD: on first focus a 2x resolution set is baked in a worker
+  // (fully off-thread, during the travel shot). The finished textures are then
+  // GPU-uploaded one per frame in useFrame below, and only hot-swapped into
+  // the live materials once all of them are resident — no frame ever pays for
+  // more than a single upload, so the FPS stays flat.
+  const gl = useThree((s) => s.gl)
+  const upgradeRef = useRef(null)
   useEffect(() => {
     if (!focused || def.type === 'gas') return
     let cancelled = false
     upgradePlanetTextures(def).then((hi) => {
-      if (cancelled || !hi) return
-      surfaceMaterial.map = hi.map
-      surfaceMaterial.bumpMap = hi.bumpMap
-      surfaceMaterial.roughnessMap = hi.roughnessMap
-      if (hi.emissiveMap) surfaceMaterial.emissiveMap = hi.emissiveMap
-      surfaceMaterial.needsUpdate = true
-      if (hi.cloudsMap && cloudMaterial) {
-        cloudMaterial.alphaMap = hi.cloudsMap
-        cloudMaterial.needsUpdate = true
+      if (cancelled || !hi || surfaceMaterial.map === hi.map) return
+      upgradeRef.current = {
+        hi,
+        queue: [hi.map, hi.bumpMap, hi.roughnessMap, hi.emissiveMap, hi.cloudsMap].filter(Boolean),
       }
     })
     return () => {
@@ -152,6 +152,26 @@ export default function Planet({ def }) {
   }, [focused, def, surfaceMaterial, cloudMaterial])
 
   useFrame((state, dt) => {
+    // staggered hi-res upload: one texture per frame, then swap
+    const up = upgradeRef.current
+    if (up) {
+      if (up.queue.length) {
+        gl.initTexture(up.queue.shift())
+      } else {
+        const hi = up.hi
+        surfaceMaterial.map = hi.map
+        surfaceMaterial.bumpMap = hi.bumpMap
+        surfaceMaterial.roughnessMap = hi.roughnessMap
+        if (hi.emissiveMap) surfaceMaterial.emissiveMap = hi.emissiveMap
+        surfaceMaterial.needsUpdate = true
+        if (hi.cloudsMap && cloudMaterial) {
+          cloudMaterial.alphaMap = hi.cloudsMap
+          cloudMaterial.needsUpdate = true
+        }
+        upgradeRef.current = null
+      }
+    }
+
     const t = state.clock.elapsedTime
     const a = def.orbitPhase + t * def.orbitSpeed
     anchorRef.current.position.set(

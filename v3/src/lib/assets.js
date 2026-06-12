@@ -1,6 +1,7 @@
 // Asset pipeline: bakes every procedural texture the scene needs before the
 // canvas mounts, reporting weighted real progress to the loading screen.
 
+import * as THREE from 'three'
 import {
   bakeHotPlanet,
   bakeHabitablePlanet,
@@ -13,6 +14,7 @@ import {
   bakeFlareGhostTexture,
   hsl,
 } from './textureGen'
+import { PLANET_TEXTURE_KEYS } from './planetPixels'
 import { createRng } from './prng'
 import { SYSTEM_SEED } from '../config/solarSystem'
 
@@ -122,18 +124,49 @@ async function runPipeline(planets, onProgress) {
 
 // ---------------------------------------------------------------------------
 // On-demand texture LOD: when a planet is focused for the first time, a 2x
-// resolution set is baked in the background (chunked, non-blocking) and the
-// live material is hot-swapped once ready.
+// resolution set is baked in a Web Worker — completely off the main thread —
+// and handed back as raw buffers. The caller GPU-uploads the resulting
+// textures gradually before hot-swapping them into the live material.
 // ---------------------------------------------------------------------------
 
 const HI_RES = { width: 1536, height: 768 }
 const hiResPromises = {}
+let bakeWorker = null
+
+function toDataTexture(buffer, width, height, srgb) {
+  const tex = new THREE.DataTexture(new Uint8ClampedArray(buffer), width, height)
+  tex.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace
+  tex.wrapS = THREE.RepeatWrapping
+  tex.wrapT = THREE.ClampToEdgeWrapping
+  tex.magFilter = THREE.LinearFilter
+  tex.minFilter = THREE.LinearMipmapLinearFilter
+  tex.generateMipmaps = true
+  tex.anisotropy = 8
+  tex.needsUpdate = true
+  return tex
+}
 
 export function upgradePlanetTextures(def) {
-  const baker = BAKERS[def.type]
-  if (!baker) return Promise.resolve(null)
+  if (!BAKERS[def.type]) return Promise.resolve(null)
   if (!hiResPromises[def.id]) {
-    hiResPromises[def.id] = baker(def.seed, null, HI_RES)
+    hiResPromises[def.id] = new Promise((resolve) => {
+      if (!bakeWorker) {
+        bakeWorker = new Worker(new URL('./bakeWorker.js', import.meta.url), { type: 'module' })
+      }
+      const onMessage = (e) => {
+        if (e.data.id !== def.id) return
+        bakeWorker.removeEventListener('message', onMessage)
+        const { width, height, channels, buffers } = e.data
+        const out = {}
+        for (const ch of channels) {
+          const [key, srgb] = PLANET_TEXTURE_KEYS[ch]
+          out[key] = toDataTexture(buffers[ch], width, height, srgb)
+        }
+        resolve(out)
+      }
+      bakeWorker.addEventListener('message', onMessage)
+      bakeWorker.postMessage({ id: def.id, type: def.type, seed: def.seed, ...HI_RES })
+    })
   }
   return hiResPromises[def.id]
 }
